@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Phone, ArrowRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Phone, ShieldCheck, Volume2, VolumeX } from 'lucide-react'; // Importamos iconos de volumen
 
 const PHONE_NUMBER = "+1 (346) 522 3259";
 const PHONE_LINK = "tel:+13465223259";
@@ -10,6 +10,8 @@ const HOME_URL = "https://manuelsolis.com";
 
 export default function LandingPage() {
   const [videoExpanded, setVideoExpanded] = useState(false);
+  const [isMuted, setIsMuted] = useState(true); // Estado inicial SILENCIO (obligatorio para autoplay)
+  const videoRef = useRef(null); // Referencia para controlar el video
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -21,7 +23,14 @@ export default function LandingPage() {
     };
   }, []);
 
-  // CORRECCIÓN TYPESCRIPT: Añadimos ': React.CSSProperties' para tipado de estilos
+  // Función para alternar el audio
+  const toggleAudio = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    }
+  };
+
   const labelStyle: React.CSSProperties = {
     fontSize: '13px', 
     fontWeight: 'bold',
@@ -145,7 +154,7 @@ export default function LandingPage() {
           Manuel Solis Abogados de inmigración y accidentes
         </h1>
 
-        {/* VIDEO (Fuente HLS actualizada y tag <video> para compatibilidad) */}
+        {/* CONTENEDOR DE VIDEO */}
         <div style={{
           width: '100%',
           maxWidth: '1150px',
@@ -157,17 +166,18 @@ export default function LandingPage() {
           <div style={{
             position: 'relative',
             width: '100%',
-            paddingBottom: '56.25%',
+            paddingBottom: '56.25%', // Aspect Ratio 16:9
             borderRadius: '24px',
             overflow: 'hidden',
             backgroundColor: '#000',
             boxShadow: '0 30px 60px rgba(0,0,0,0.8), 0 0 0 2px rgba(178,144,77,0.5), 0 0 80px rgba(178,144,77,0.3)'
           }}>
             <video 
+              ref={videoRef}
               src="https://vz-9f852395-0ee.b-cdn.net/d03226cf-0cc4-4ac9-a5ab-b17eb436d792/playlist.m3u8" 
               autoPlay 
               loop 
-              muted 
+              muted={true} // Importante: Inicialmente true
               playsInline
               controls={false}
               style={{
@@ -182,6 +192,44 @@ export default function LandingPage() {
             >
               Su navegador no soporta el tag de video.
             </video>
+
+            {/* --- BOTÓN DE AUDIO AGREGADO --- */}
+            <button
+              onClick={toggleAudio}
+              style={{
+                position: 'absolute',
+                bottom: '20px',
+                right: '20px',
+                zIndex: 60, // z-index alto para asegurar que se ve
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '50%',
+                width: '48px',
+                height: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                backdropFilter: 'blur(4px)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = PRIMARY_COLOR;
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              {isMuted ? (
+                <VolumeX color="white" size={24} />
+              ) : (
+                <Volume2 color="white" size={24} />
+              )}
+            </button>
+            {/* --- FIN BOTÓN DE AUDIO --- */}
+
           </div>
         </div>
         {/* FIN DEL BLOQUE DE VIDEO */}
