@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Phone, ShieldCheck, Volume2, VolumeX } from 'lucide-react'; // Importamos iconos de volumen
+import { Phone, ShieldCheck, Volume2, VolumeX } from 'lucide-react';
 
 const PHONE_NUMBER = "+1 (346) 522 3259";
 const PHONE_LINK = "tel:+13465223259";
@@ -10,8 +10,10 @@ const HOME_URL = "https://manuelsolis.com";
 
 export default function LandingPage() {
   const [videoExpanded, setVideoExpanded] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Estado inicial SILENCIO (obligatorio para autoplay)
-  const videoRef = useRef(null); // Referencia para controlar el video
+  const [isMuted, setIsMuted] = useState(true);
+  
+  // CORRECCIÓN AQUÍ: Agregamos <HTMLVideoElement> para evitar el error de build
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -23,7 +25,6 @@ export default function LandingPage() {
     };
   }, []);
 
-  // Función para alternar el audio
   const toggleAudio = () => {
     if (videoRef.current) {
       videoRef.current.muted = !videoRef.current.muted;
@@ -177,7 +178,7 @@ export default function LandingPage() {
               src="https://vz-9f852395-0ee.b-cdn.net/d03226cf-0cc4-4ac9-a5ab-b17eb436d792/playlist.m3u8" 
               autoPlay 
               loop 
-              muted={true} // Importante: Inicialmente true
+              muted={true} 
               playsInline
               controls={false}
               style={{
@@ -193,14 +194,14 @@ export default function LandingPage() {
               Su navegador no soporta el tag de video.
             </video>
 
-            {/* --- BOTÓN DE AUDIO AGREGADO --- */}
+            {/* BOTÓN DE AUDIO */}
             <button
               onClick={toggleAudio}
               style={{
                 position: 'absolute',
                 bottom: '20px',
                 right: '20px',
-                zIndex: 60, // z-index alto para asegurar que se ve
+                zIndex: 60,
                 backgroundColor: 'rgba(0, 0, 0, 0.6)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
                 borderRadius: '50%',
@@ -228,11 +229,9 @@ export default function LandingPage() {
                 <Volume2 color="white" size={24} />
               )}
             </button>
-            {/* --- FIN BOTÓN DE AUDIO --- */}
 
           </div>
         </div>
-        {/* FIN DEL BLOQUE DE VIDEO */}
 
         {/* BOTONES */}
         <div style={{
